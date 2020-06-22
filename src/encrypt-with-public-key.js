@@ -1,29 +1,24 @@
-import {
-    encrypt
-} from 'eccrypto';
-import {
-    decompress
-} from './public-key';
+import { encrypt } from "eccrypto";
+import { decompress } from "./public-key";
 
-export default function encryptWithPublicKey(publicKey, message) {
+export default function encryptWithPublicKey(publicKey, message, opts) {
+  // ensure its an uncompressed publicKey
+  publicKey = decompress(publicKey);
 
-    // ensure its an uncompressed publicKey
-    publicKey = decompress(publicKey);
+  // re-add the compression-flag
+  const pubString = "04" + publicKey;
 
-    // re-add the compression-flag
-    const pubString = '04' + publicKey;
-
-
-    return encrypt(
-        Buffer.from(pubString, 'hex'),
-        Buffer.from(message)
-    ).then(encryptedBuffers => {
-        const encrypted = {
-            iv: encryptedBuffers.iv.toString('hex'),
-            ephemPublicKey: encryptedBuffers.ephemPublicKey.toString('hex'),
-            ciphertext: encryptedBuffers.ciphertext.toString('hex'),
-            mac: encryptedBuffers.mac.toString('hex')
-        };
-        return encrypted;
-    });
+  return encrypt(
+    Buffer.from(pubString, "hex"),
+    Buffer.from(message),
+    opts
+  ).then((encryptedBuffers) => {
+    const encrypted = {
+      iv: encryptedBuffers.iv.toString("hex"),
+      ephemPublicKey: encryptedBuffers.ephemPublicKey.toString("hex"),
+      ciphertext: encryptedBuffers.ciphertext.toString("hex"),
+      mac: encryptedBuffers.mac.toString("hex"),
+    };
+    return encrypted;
+  });
 }
