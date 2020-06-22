@@ -8,11 +8,15 @@ export default function encryptWithPublicKey(publicKey, message, opts) {
   // re-add the compression-flag
   const pubString = "04" + publicKey;
 
-  if (opts.ephemPrivateKey && typeof opts.ephemPrivateKey === "string") {
+  if (
+    opts &&
+    opts.ephemPrivateKey &&
+    typeof opts.ephemPrivateKey === "string"
+  ) {
     opts.ephemPrivateKey = Buffer.from(opts.ephemPrivateKey, "hex");
   }
 
-  if (opts.iv && typeof opts.iv === "string") {
+  if (opts && opts.iv && typeof opts.iv === "string") {
     opts.iv = Buffer.from(opts.iv, "hex");
   }
 
